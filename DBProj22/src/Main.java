@@ -84,16 +84,25 @@ public class Main {
 
 	public static int getInt()
 
-	{
+	{	try {
 		String s = getString();
 		return Integer.parseInt(s);
+	}
+		catch(Exception e) {
+			return -1;
+		}
 	}
 
 	public static char getChar()
 
 	{
 		String s = getString();
+		try {
 		return s.charAt(0);
+		}
+		catch (Exception e) {
+			return 0;
+		}
 	}
 }
 

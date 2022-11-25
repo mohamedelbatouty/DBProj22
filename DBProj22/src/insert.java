@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Scanner;
 public class insert {
 
@@ -33,22 +34,244 @@ public static void pick(Connection conn) throws SQLException {
 			
 }	
 
-private static void InsertCS(Connection conn) {
+private static void InsertCS(Connection conn) throws SQLException {
+	PreparedStatement pstmt = conn.prepareStatement(
+			"INSERT INTO COURSE_SECTION(Dep_Code, CNumber, Section_Number, Instructor , CS_Year, Semester) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)");
+		
+	System.out.print("\nEnter Department Code: ");
+	String Dep_Code = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Department Code");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Number: ");
+	String CNumber = Main.getString();
+	while(CNumber.compareTo("")==0||CNumber.length()>7) {
+		System.out.println("Enter a valid Course Number");
+		CNumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Section Number: ");
+	int Section_Number = Main.getInt();
+	while (Section_Number==-1) {
+		System.out.println("Enter a valid Section Number");
+		Section_Number=Main.getInt();
+	}
+	
+	
+	System.out.print("\nEnter Instructor Nnumber: ");
+	String Nnumber = Main.getString();
+	while(Nnumber.compareTo("")==0||Nnumber.charAt(0)!='N'||Nnumber.length()!=9) {
+		System.out.println("Enter a valid Nnumber");
+		Nnumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Year: ");
+	int year = Main.getInt();
+	while (year==-1) {
+		System.out.println("Enter a valid year");
+		year=Main.getInt();
+	}
+	
+	System.out.print("\nEnter Semester: ");
+	String Semester = Main.getString();
+	
+		
+	pstmt.setString(1, Dep_Code);
+	pstmt.setString(2, CNumber);
+	pstmt.setInt(3, Section_Number);
+	pstmt.setString(4, Nnumber);
+	pstmt.setInt(5,year);
+	pstmt.setString(6, Semester);
+	try {
+	int NumRows = pstmt.executeUpdate();
+	System.out.println("\n" + NumRows + " Course inserted");
+	}
+	catch(SQLIntegrityConstraintViolationException e){
+		System.out.println("That Course section already exists, or that course/Instructor doesn't exist");
+	}
 	// TODO Auto-generated method stub
 	
 }
 
-private static void InsertInstructor(Connection conn) {
+private static void InsertInstructor(Connection conn) throws SQLException {
+	PreparedStatement pstmt = conn.prepareStatement(
+			"INSERT INTO INSTRUCTOR(Nnumber, Ssn, Fname, Minit, LName, Birth_Date, City, State, Zip, Phone, Office_Number, Department_Code)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	
+	System.out.print("\nEnter Instructor Nnumber: ");
+	String Nnumber = Main.getString();
+	while(Nnumber.compareTo("")==0||Nnumber.charAt(0)!='N'||Nnumber.length()!=9) {
+		System.out.println("Enter a valid Nnumber");
+		Nnumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter SSN: ");
+	String Ssn = Main.getString();
+	while(Ssn.compareTo("")==0||Ssn.length()!=9||Ssn.matches("[0-9]+")==false) {
+		System.out.println("Enter a valid Ssn");
+		Ssn=Main.getString();
+	}
+	
+	System.out.print("\nEnter First Name: ");
+	String Fname = Main.getString();
+	while(Fname.compareTo("")==0) {
+		System.out.print("Enter a first name:");
+		Fname=Main.getString();
+	}
+	
+	System.out.print("\nEnter Middle Initial: ");
+	String Minit = String.valueOf(Main.getChar());
+	
+	System.out.print("\nEnter Last Name: ");
+	String LName = Main.getString();
+	while(LName.compareTo("")==0) {
+		System.out.println("Enter a Last name:");
+		LName=Main.getString();
+	}
+	
+	System.out.print("\nEnter Birth-date (yyyy-mm-dd): ");
+	String tmppindate = Main.getString(); // the date is read as a String object in the specified format
+	Date Birth_Date=null;
+	if (tmppindate.compareTo("")!=0)
+		 Birth_Date = Date.valueOf(tmppindate); // this converts the String object into a Date object
+	
+	System.out.print("\nEnter City of Residence : ");
+	String City_Curr = Main.getString();
+	
+	System.out.print("\nEnter Zip of Residence: ");
+	String Zip_Curr = Main.getString();
+	
+	System.out.print("\nEnter State of Residence: ");
+	String State_Curr = Main.getString();
+	
+	System.out.print("\nEnter Phone Number: ");
+	String Phone_Curr = Main.getString();
+	
+	
+	System.out.print("\nEnter Office Phone Number : ");
+	String Office_Number = Main.getString();
+	
+	System.out.print("\nEnter Department Code : ");
+	String Dep_Code = Main.getString();
+	
+	
+	pstmt.setString(1, Nnumber);
+	pstmt.setString(2, Ssn);
+	pstmt.setString(3, Fname);
+	pstmt.setString(4, Minit);
+	pstmt.setString(5, LName);
+	pstmt.setDate(6,Birth_Date);
+	pstmt.setString(7, City_Curr);
+	pstmt.setString(8, Zip_Curr);
+	pstmt.setString(9, State_Curr);
+	pstmt.setString(10, Phone_Curr);
+	pstmt.setString(11, Office_Number);
+	pstmt.setString(12, Dep_Code);
+	
+	
+	try {
+	int NumRows = pstmt.executeUpdate();
+	System.out.println("\n" + NumRows + " Instructor inserted");
+	}
+	catch(SQLIntegrityConstraintViolationException e){
+		System.out.println("A Instructor with that SSN or Nnumber already exists");
+	}
 	// TODO Auto-generated method stub
 	
 }
 
-private static void InsertCourse(Connection conn) {
+private static void InsertCourse(Connection conn) throws SQLException {
+	PreparedStatement pstmt = conn.prepareStatement(
+			"INSERT INTO COURSE(Dep_Code, CNumber, CName, CLevel, Description, Num_Hours) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)");
+		
+	System.out.print("\nEnter Department Code: ");
+	String Dep_Code = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Department Code");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Number: ");
+	String CNumber = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()>7) {
+		System.out.println("Enter a valid Course Number");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Name: ");
+	String CName = Main.getString();
+	while(CName.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Course Name");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Level: ");
+	String CLevel = Main.getString();
+	
+	System.out.print("\nEnter Course Description: ");
+	String Description = Main.getString();
+	
+	System.out.print("\nEnter Course Credit Hours: ");
+	int Num_Hours = Main.getInt();
+		
+	pstmt.setString(1, Dep_Code);
+	pstmt.setString(2, CNumber);
+	pstmt.setString(3, CName);
+	pstmt.setString(4, CLevel);
+	pstmt.setString(5, Description);
+	pstmt.setInt(6, Num_Hours);
+	try {
+	int NumRows = pstmt.executeUpdate();
+	System.out.println("\n" + NumRows + " Course inserted");
+	}
+	catch(SQLIntegrityConstraintViolationException e){
+		System.out.println("A Course with that Name or Code already exists, or that department doesn't exist");
+	}
 	// TODO Auto-generated method stub
 	
 }
 
-private static void InsertDepartment(Connection conn) {
+private static void InsertDepartment(Connection conn) throws SQLException {
+	PreparedStatement pstmt = conn.prepareStatement(
+			"INSERT INTO DEPARTMENT(Office_num, Dep_Code, Dep_Name, Office_Phone, College) "
+					+ "VALUES (?, ?, ?, ?, ?)");
+	System.out.print("\nEnter Office Number: ");
+	int Office_num = Main.getInt();
+	
+	
+	System.out.print("\nEnter Department Code: ");
+	String Dep_Code = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Department Code");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Department Name: ");
+	String Dep_Name = Main.getString();
+	
+	System.out.print("\nEnter Office Phone Number: ");
+	String Office_Phone = Main.getString();
+	
+	System.out.print("\nEnter College: ");
+	String College = Main.getString();
+	
+		
+	pstmt.setInt(1, Office_num);
+	pstmt.setString(2, Dep_Code);
+	pstmt.setString(3, Dep_Name);
+	pstmt.setString(4, Office_Phone);
+	pstmt.setString(5, College);
+	try {
+	int NumRows = pstmt.executeUpdate();
+	System.out.println("\n" + NumRows + " Department inserted");
+	}
+	catch(SQLIntegrityConstraintViolationException e){
+		System.out.println("A Department with that Name or Code already exists");
+	}
 	// TODO Auto-generated method stub
 	
 }
@@ -59,27 +282,40 @@ private static void InsertStudent(Connection conn) throws SQLException {
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	System.out.print("\nEnter Student Nnumber: ");
 	String Nnumber = Main.getString();
-	System.out.println(Nnumber.compareTo(""));
-	while(!(Nnumber!= null)) {
-		System.out.println("null");
-		break;
+	while(Nnumber.compareTo("")==0||Nnumber.charAt(0)!='N'||Nnumber.length()!=9) {
+		System.out.println("Enter a valid Nnumber");
+		Nnumber=Main.getString();
 	}
 	
 	System.out.print("\nEnter SSN: ");
 	String Ssn = Main.getString();
+	while(Ssn.compareTo("")==0||Ssn.length()!=9||Ssn.matches("[0-9]+")==false) {
+		System.out.println("Enter a valid Ssn");
+		Ssn=Main.getString();
+	}
 	
 	System.out.print("\nEnter First Name: ");
 	String Fname = Main.getString();
+	while(Fname.compareTo("")==0) {
+		System.out.print("Enter a first name:");
+		Fname=Main.getString();
+	}
 	
 	System.out.print("\nEnter Middle Initial: ");
 	String Minit = String.valueOf(Main.getChar());
 	
 	System.out.print("\nEnter Last Name: ");
 	String LName = Main.getString();
+	while(LName.compareTo("")==0) {
+		System.out.println("Enter a Last name:");
+		LName=Main.getString();
+	}
 	
 	System.out.print("\nEnter Birth-date (yyyy-mm-dd): ");
 	String tmppindate = Main.getString(); // the date is read as a String object in the specified format
-	Date Birth_Date = Date.valueOf(tmppindate); // this converts the String object into a Date object
+	Date Birth_Date=null;
+	if (tmppindate.compareTo("")!=0)
+		 Birth_Date = Date.valueOf(tmppindate); // this converts the String object into a Date object
 	
 	System.out.print("\nEnter M or F: ");
 	String Sex = String.valueOf(Main.getChar());
@@ -132,12 +368,9 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	int NumRows = pstmt.executeUpdate();
 	System.out.println("\n" + NumRows + " Student inserted");
 	}
-	catch(Exception e){
+	catch(SQLIntegrityConstraintViolationException e){
 		System.out.println("A student with that SSN or Nnumber already exists");
 	}
-	
-	// TODO Auto-generated method stub
-	
 }
 
 public static void InsertToCourse(Connection conn){
