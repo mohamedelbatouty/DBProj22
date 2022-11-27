@@ -1,8 +1,10 @@
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Statement;
 import java.util.Scanner;
 public class insert {
 
@@ -373,12 +375,132 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	}
 }
 
-public static void InsertToCourse(Connection conn){
+public static void InsertToCourse(Connection conn) throws SQLException{
+	PreparedStatement pstmt = conn.prepareStatement(
+			"INSERT INTO ENROLLEDIN(Nnumber, Dep_Code, CNumber, Section_Number , CS_Year, Semester, Grade) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)");
+	
+	System.out.print("\nEnter Student Nnumber: ");
+	String Nnumber = Main.getString();
+	while(Nnumber.compareTo("")==0||Nnumber.charAt(0)!='N'||Nnumber.length()!=9) {
+		System.out.println("Enter a valid Nnumber");
+		Nnumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Department Code: ");
+	String Dep_Code = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Department Code");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Number: ");
+	String CNumber = Main.getString();
+	while(CNumber.compareTo("")==0||CNumber.length()>7) {
+		System.out.println("Enter a valid Course Number");
+		CNumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Section Number: ");
+	int Section_Number = Main.getInt();
+	while (Section_Number==-1) {
+		System.out.println("Enter a valid Section Number");
+		Section_Number=Main.getInt();
+	}
+		
+	System.out.print("\nEnter Year: ");
+	int year = Main.getInt();
+	while (year==-1) {
+		System.out.println("Enter a valid year");
+		year=Main.getInt();
+	}
+	
+	System.out.print("\nEnter Semester: ");
+	String Semester = Main.getString();
+	
+	System.out.print("\nEnter Grade: ");
+	int Grade = Main.getInt();
+	
+		
+	pstmt.setString(1, Nnumber);
+	pstmt.setString(2, Dep_Code);
+	pstmt.setString(3, CNumber);
+	pstmt.setInt(4, Section_Number);
+	pstmt.setInt(5,year);
+	pstmt.setString(6, Semester);
+	if (Grade == -1) {
+        pstmt.setNull(7, java.sql.Types.INTEGER);
+    }
+	else
+		pstmt.setInt(7,Grade);
+	try {
+	int NumRows = pstmt.executeUpdate();
+	System.out.println("\n" + NumRows + " Course inserted");
+	}
+	catch(SQLIntegrityConstraintViolationException e){
+		System.out.println("That Course section already exists, or that course/Instructor doesn't exist");
+	}
 	System.out.println("Inserting to course");
 }
 
-public static void InsertGrade(Connection conn){
-	System.out.println("Inserting Grade");
+public static void InsertGrade(Connection conn) throws SQLException{
+	
+	System.out.print("\nEnter Student Nnumber: ");
+	String Nnumber = Main.getString();
+	while(Nnumber.compareTo("")==0||Nnumber.charAt(0)!='N'||Nnumber.length()!=9) {
+		System.out.println("Enter a valid Nnumber");
+		Nnumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Department Code: ");
+	String Dep_Code = Main.getString();
+	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
+		System.out.println("Enter a valid Department Code");
+		Dep_Code=Main.getString();
+	}
+	
+	System.out.print("\nEnter Course Number: ");
+	String CNumber = Main.getString();
+	while(CNumber.compareTo("")==0||CNumber.length()>7) {
+		System.out.println("Enter a valid Course Number");
+		CNumber=Main.getString();
+	}
+	
+	System.out.print("\nEnter Section Number: ");
+	int Section_Number = Main.getInt();
+	while (Section_Number==-1) {
+		System.out.println("Enter a valid Section Number");
+		Section_Number=Main.getInt();
+	}
+		
+	System.out.print("\nEnter Year: ");
+	int year = Main.getInt();
+	while (year==-1) {
+		System.out.println("Enter a valid year");
+		year=Main.getInt();
+	}
+	
+	System.out.print("\nEnter Semester: ");
+	String Semester = Main.getString();
+
+	System.out.print("Enter Grade: ");
+	int Grade = Main.getInt();
+	while (Grade>110|Grade<0) {
+		System.out.print("\nEnter a valid Grade Number");
+		Grade=Main.getInt();
+	}
+	Statement stmt = conn.createStatement();
+	String q = "UPDATE ENROLLEDIN SET Grade= "+Grade+" WHERE Nnumber= '" + Nnumber +"' and Dep_Code='"+Dep_Code+"' and CNumber='"+CNumber+"' and"
+			+ " Section_Number= "+ Section_Number+" and CS_Year= "+year+" and Semester= '"+Semester+"'";
+
+	
+	try {
+	ResultSet NumRows = stmt.executeQuery(q);
+	System.out.println("\nGrade inserted");
+	}
+	catch (Exception e) {
+		System.out.println("That Enrolled Record Doesn't Exist");
+	}
 }
 
 }

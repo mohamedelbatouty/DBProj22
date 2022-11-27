@@ -28,7 +28,7 @@ public class List {
 			String Dep_Code = rset.getString("Dep_Code");
 			String CNumber = rset.getString("CNumber");
 			int Section_Number = rset.getInt("Section_Number");
-			Date CS_Year = rset.getDate("CS_Year");
+			int CS_Year = rset.getInt("CS_Year");
 			String Semester = rset.getString("Semester");
 			System.out.println(Dep_Code + ":" + CNumber + ":" + Section_Number + ":" + CS_Year+ ":" + Semester);
 		} // while rset
@@ -39,19 +39,18 @@ public class List {
 	public static void Offered(Connection conn) throws SQLException {
 		// TODO Auto-generated method stub
 		Statement stmt = conn.createStatement();
-		Scanner myObj = new Scanner(System.in);
 		System.out.print("Would you like to insert department name or code?");
-		String choice=myObj.nextLine();
+		String choice=Main.getString();
 		String q = null;
 		if (choice.compareToIgnoreCase("name")==0) {
 			System.out.print("\nEnter department name:");
-			String name=myObj.nextLine();
+			String name= Main.getString();
 			q = "select CNumber, CName, CLevel, Num_hours, Description " + "from COURSE Co, DEPARTMENT De " + "where De.Dep_Name='" + name+"' and Co.Dep_code=De.Dep_Code";
 		}
 		else if (choice.compareToIgnoreCase("code")==0) {
-			System.out.print("\nEnter department name:");
-			int code=myObj.nextInt();
-			q = "select CNumber, CName, CLevel, Num_hours, Description " + "from COURSE " + "where Dep_Code=" + code;
+			System.out.print("\nEnter department code:");
+			String code=Main.getString();
+			q = "select CNumber, CName, CLevel, Num_hours, Description " + "from COURSE " + "where Dep_Code='" + code+"'";
 			
 		}
 		
