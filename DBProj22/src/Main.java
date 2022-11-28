@@ -43,9 +43,7 @@ public class Main {
 			insert.InsertToCourse(conn);
 			break;
 		case "3":
-			System.out.println("Give a student's Nnumber for their Report");
-			String Nnumber=myObj.next();
-			Report.StudentReport(conn,Nnumber);
+			Report.StudentReport(conn);
 			break;
 		case "4":
 			List.Offered(conn);

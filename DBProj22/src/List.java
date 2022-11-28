@@ -11,10 +11,7 @@ public class List {
 		Statement stmt = conn.createStatement();
 		
 		System.out.print("Instructor Nnumber: ");
-		String v = Main.getString();
-		// System.out.println(v);
-		// Select the P_CODE, P_DESCRIPT, P_PRICE, and P_ONHAND columns from the
-		// PRODUCT table
+		String v=insert.GetNnumber();
 
 		String q = "select Dep_Code, CNumber, Section_Number, CS_Year, Semester " + "from COURSE_SECTION " + "where Instructor= '" + v +"'";
 		
