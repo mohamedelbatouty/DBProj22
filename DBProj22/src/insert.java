@@ -9,15 +9,52 @@ import java.util.Scanner;
 public class insert {
 
 	public static String GetNnumber() {
-		
+		try {
 		String Nnumber = Main.getString();
-		while(Nnumber.compareTo("")==0||(Nnumber.charAt(0)!='N'&&Nnumber.charAt(0)!='n')||Nnumber.length()!=9||Nnumber.substring(1,8).matches("[0-9]+")==false) {
+		while(Nnumber.compareTo("")==0||(Nnumber.charAt(0)!='N')||Nnumber.length()!=9||Nnumber.substring(1,8).matches("[0-9]+")==false) {
 			System.out.println("Enter a valid Nnumber");
 			Nnumber=Main.getString();
 		}
 		return Nnumber;
+		}
+		catch (Exception e) {
+			System.out.println("Enter a valid SSN");
+			return GetNnumber();
+		}
 	}
 	
+	public static String DepCode() {
+		String Dep_Code= Main.getString();
+		while(Dep_Code.compareTo("")==0||Dep_Code.length()>4) {
+			System.out.println("Enter a valid Department Code");
+			Dep_Code=Main.getString();
+		}
+		return Dep_Code;
+	}
+	
+	public static String CourseNumber() {
+		try{
+		String CNumber= Main.getString();
+		while(CNumber.compareTo("")==0||(CNumber.substring(3,7).matches("[0-9]+")==false||CNumber.substring(0,2).matches("[a-zA-Z]+")==false)) {
+			System.out.println("Enter a valid Course Number");
+			CNumber=Main.getString();
+		}
+		return CNumber;
+		}
+		catch (Exception e) {
+			System.out.println("Enter a valid Course Number");
+				return CourseNumber();
+		}
+	}
+	
+	public static String Semester() {
+		String Semester= Main.getString();
+		while(Semester.compareTo("")==0||(Semester.compareToIgnoreCase("Summer")!=0 && Semester.compareToIgnoreCase("fall")!=0 && Semester.compareToIgnoreCase("Spring")!=0)) {
+			System.out.println("Enter a valid Semester");
+			Semester=Main.getString();
+		}
+		return Semester;
+	}
 	
 @SuppressWarnings("resource")
 public static void pick(Connection conn) throws SQLException {
@@ -53,18 +90,12 @@ private static void InsertCS(Connection conn) throws SQLException {
 					+ "VALUES (?, ?, ?, ?, ?, ?)");
 		
 	System.out.print("\nEnter Department Code: ");
-	String Dep_Code = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Department Code");
-		Dep_Code=Main.getString();
-	}
+	String Dep_Code = DepCode();
+	
 	
 	System.out.print("\nEnter Course Number: ");
-	String CNumber = Main.getString();
-	while(CNumber.compareTo("")==0||CNumber.length()>7) {
-		System.out.println("Enter a valid Course Number");
-		CNumber=Main.getString();
-	}
+	String CNumber = CourseNumber();
+	
 	
 	System.out.print("\nEnter Section Number: ");
 	int Section_Number = Main.getInt();
@@ -85,7 +116,7 @@ private static void InsertCS(Connection conn) throws SQLException {
 	}
 	
 	System.out.print("\nEnter Semester: ");
-	String Semester = Main.getString();
+	String Semester = Semester();
 	
 		
 	pstmt.setString(1, Dep_Code);
@@ -104,6 +135,7 @@ private static void InsertCS(Connection conn) throws SQLException {
 	// TODO Auto-generated method stub
 	
 }
+
 
 private static void InsertInstructor(Connection conn) throws SQLException {
 	PreparedStatement pstmt = conn.prepareStatement(
@@ -163,7 +195,7 @@ private static void InsertInstructor(Connection conn) throws SQLException {
 	String Office_Number = Main.getString();
 	
 	System.out.print("\nEnter Department Code : ");
-	String Dep_Code = Main.getString();
+	String Dep_Code = DepCode();
 	
 	
 	pstmt.setString(1, Nnumber);
@@ -199,24 +231,16 @@ private static void InsertCourse(Connection conn) throws SQLException {
 					+ "VALUES (?, ?, ?, ?, ?, ?)");
 		
 	System.out.print("\nEnter Department Code: ");
-	String Dep_Code = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Department Code");
-		Dep_Code=Main.getString();
-	}
+	String Dep_Code = DepCode();
 	
 	System.out.print("\nEnter Course Number: ");
-	String CNumber = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()>7) {
-		System.out.println("Enter a valid Course Number");
-		Dep_Code=Main.getString();
-	}
+	String CNumber = CourseNumber();
 	
 	System.out.print("\nEnter Course Name: ");
 	String CName = Main.getString();
-	while(CName.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Course Name");
-		Dep_Code=Main.getString();
+	while(CName.compareTo("")==0) {
+		System.out.println("You must enter a Course Name");
+		CName=Main.getString();
 	}
 	
 	System.out.print("\nEnter Course Level: ");
@@ -227,6 +251,10 @@ private static void InsertCourse(Connection conn) throws SQLException {
 	
 	System.out.print("\nEnter Course Credit Hours: ");
 	int Num_Hours = Main.getInt();
+	while (Num_Hours==-1) {
+		System.out.println("You must enter an hour amount");
+		Num_Hours=Main.getInt();
+	}
 		
 	pstmt.setString(1, Dep_Code);
 	pstmt.setString(2, CNumber);
@@ -254,11 +282,7 @@ private static void InsertDepartment(Connection conn) throws SQLException {
 	
 	
 	System.out.print("\nEnter Department Code: ");
-	String Dep_Code = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Department Code");
-		Dep_Code=Main.getString();
-	}
+	String Dep_Code = DepCode();
 	
 	System.out.print("\nEnter Department Name: ");
 	String Dep_Name = Main.getString();
@@ -297,6 +321,8 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	PreparedStatement pstmtt = conn.prepareStatement(
 			"INSERT INTO INFORMATION(Nnumber, Ssn)"
 					+ "VALUES (?, ?)");
+	
+	
 	System.out.print("\nEnter Student Nnumber: ");
 	String Nnumber = GetNnumber();
 	
@@ -383,6 +409,43 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	int NumRows = pstmtt.executeUpdate();
 	NumRows = pstmt.executeUpdate();
 	System.out.println("\n" + NumRows + " Student inserted");
+	PreparedStatement Major = conn.prepareStatement(
+			"INSERT INTO MAJOR_DEP(Nnumber, Major_code)"
+					+ "VALUES (?, ?)");
+	PreparedStatement Minor = conn.prepareStatement(
+			"INSERT INTO MINOR_DEP(Nnumber, Minor_code)"
+					+ "VALUES (?, ?)");
+	PreparedStatement Degree = conn.prepareStatement(
+			"INSERT INTO DEGREE_PROGRAM(Nnumber, Degree_Program)"
+					+ "VALUES (?, ?)");
+	
+	System.out.print("\nEnter Major Department Code: ");
+	String MajorDep = Main.getString();
+	
+	Major.setString(1, Nnumber);
+	Major.setString(2, MajorDep);
+
+	System.out.print("\nEnter Minor Department Code: ");
+	String MinorDep = Main.getString();
+	
+	Minor.setString(1, Nnumber);
+	Minor.setString(2, MinorDep);
+
+	
+	System.out.print("\nEnter Degree Program: ");
+	String DegreePro = Main.getString();
+	
+	Degree.setString(1, Nnumber);
+	Degree.setString(2, DegreePro);
+	
+	
+	NumRows = Major.executeUpdate();
+	System.out.println("\n" + NumRows + " Major inserted");
+	NumRows = Minor.executeUpdate();
+	System.out.println("\n" + NumRows + " Minor inserted");
+	NumRows = Degree.executeUpdate();
+	System.out.println("\n" + NumRows + " Degree Program inserted");
+	
 	}
 	catch(SQLIntegrityConstraintViolationException e){
 		System.out.println("An Instructor/Student with that SSN or Nnumber already exists");
@@ -398,18 +461,10 @@ public static void InsertToCourse(Connection conn) throws SQLException{
 	String Nnumber = GetNnumber();
 	
 	System.out.print("\nEnter Department Code: ");
-	String Dep_Code = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Department Code");
-		Dep_Code=Main.getString();
-	}
+	String Dep_Code = DepCode();
 	
 	System.out.print("\nEnter Course Number: ");
-	String CNumber = Main.getString();
-	while(CNumber.compareTo("")==0||CNumber.length()>7) {
-		System.out.println("Enter a valid Course Number");
-		CNumber=Main.getString();
-	}
+	String CNumber = CourseNumber();
 	
 	System.out.print("\nEnter Section Number: ");
 	int Section_Number = Main.getInt();
@@ -426,7 +481,7 @@ public static void InsertToCourse(Connection conn) throws SQLException{
 	}
 	
 	System.out.print("\nEnter Semester: ");
-	String Semester = Main.getString();
+	String Semester = Semester();
 
 	
 		
@@ -453,18 +508,10 @@ public static void InsertGrade(Connection conn) throws SQLException{
 	String Nnumber = GetNnumber();
 	
 	System.out.print("\nEnter Department Code: ");
-	String Dep_Code = Main.getString();
-	while(Dep_Code.compareTo("")==0||Dep_Code.length()!=4) {
-		System.out.println("Enter a valid Department Code");
-		Dep_Code=Main.getString();
-	}
+	String Dep_Code = DepCode();
 	
 	System.out.print("\nEnter Course Number: ");
-	String CNumber = Main.getString();
-	while(CNumber.compareTo("")==0||CNumber.length()>7) {
-		System.out.println("Enter a valid Course Number");
-		CNumber=Main.getString();
-	}
+	String CNumber = CourseNumber();
 	
 	System.out.print("\nEnter Section Number: ");
 	int Section_Number = Main.getInt();
@@ -481,7 +528,7 @@ public static void InsertGrade(Connection conn) throws SQLException{
 	}
 	
 	System.out.print("\nEnter Semester: ");
-	String Semester = Main.getString();
+	String Semester = Semester();
 
 	System.out.print("\nEnter Letter Grade (Not Required): ");
 	String Grade = Main.getString();
@@ -521,4 +568,6 @@ public static void InsertGrade(Connection conn) throws SQLException{
 		System.out.println("That Enrolled Record Doesn't Exist");
 	}
 }
+
+
 }

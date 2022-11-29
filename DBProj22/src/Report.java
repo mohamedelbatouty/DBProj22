@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+// finish report and make it look nice
 public class Report {
 	public static void StudentReport(Connection conn) throws SQLException {
 		// TODO Auto-generated method stub
@@ -14,7 +16,7 @@ Statement stmt = conn.createStatement();
 		// System.out.println(v);
 		// Select the P_CODE, P_DESCRIPT, P_PRICE, and P_ONHAND columns from the
 		// PRODUCT table
-
+		
 		String q = "select Dep_Code, CNumber, Section_Number, CS_Year, Semester, Grade " + "from ENROLLEDIN " + "where Nnumber= '" + v +"'";
 		
 		ResultSet rset = stmt.executeQuery(q);
