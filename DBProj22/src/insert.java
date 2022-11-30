@@ -18,7 +18,7 @@ public class insert {
 		return Nnumber;
 		}
 		catch (Exception e) {
-			System.out.println("Enter a valid SSN");
+			System.out.println("Enter a valid SSN (No Dashes)");
 			return GetNnumber();
 		}
 	}
@@ -127,7 +127,7 @@ private static void InsertCS(Connection conn) throws SQLException {
 	pstmt.setString(6, Semester);
 	try {
 	int NumRows = pstmt.executeUpdate();
-	System.out.println("\n" + NumRows + " Course inserted");
+	System.out.println("\n" + NumRows + " Course Section inserted");
 	}
 	catch(SQLIntegrityConstraintViolationException e){
 		System.out.println("That Course section already exists, or that course/Instructor doesn't exist");
@@ -139,8 +139,8 @@ private static void InsertCS(Connection conn) throws SQLException {
 
 private static void InsertInstructor(Connection conn) throws SQLException {
 	PreparedStatement pstmt = conn.prepareStatement(
-			"INSERT INTO INSTRUCTOR(Nnumber, Ssn, Fname, Minit, LName, Birth_Date, City, State, Zip, Phone, Office_Number, Department_Code)"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			"INSERT INTO INSTRUCTOR(Nnumber, Ssn, Fname, Minit, LName, City, State, Zip, Phone, Office_Number, Department_Code, Street, Age)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	PreparedStatement pstmtt = conn.prepareStatement(
 			"INSERT INTO INFORMATION(Nnumber, Ssn)"
 					+ "VALUES (?, ?)");
@@ -148,7 +148,7 @@ private static void InsertInstructor(Connection conn) throws SQLException {
 	System.out.print("\nEnter Instructor Nnumber: ");
 	String Nnumber = GetNnumber();
 	
-	System.out.print("\nEnter SSN: ");
+	System.out.print("\nEnter SSN (No Dashes): ");
 	String Ssn = Main.getString();
 	while(Ssn.compareTo("")==0||Ssn.length()!=9||Ssn.matches("[0-9]+")==false) {
 		System.out.println("Enter a valid Ssn");
@@ -172,11 +172,12 @@ private static void InsertInstructor(Connection conn) throws SQLException {
 		LName=Main.getString();
 	}
 	
-	System.out.print("\nEnter Birth-date (yyyy-mm-dd): ");
-	String tmppindate = Main.getString(); // the date is read as a String object in the specified format
-	Date Birth_Date=null;
-	if (tmppindate.compareTo("")!=0)
-		 Birth_Date = Date.valueOf(tmppindate); // this converts the String object into a Date object
+	System.out.print("\nEnter Age: ");
+	int Age = Main.getInt(); // the date is read as a String object in the specified format
+	
+	
+	System.out.print("\nEnter Street : ");
+	String Street_Curr = Main.getString();
 	
 	System.out.print("\nEnter City of Residence : ");
 	String City_Curr = Main.getString();
@@ -205,13 +206,14 @@ private static void InsertInstructor(Connection conn) throws SQLException {
 	pstmt.setString(3, Fname);
 	pstmt.setString(4, Minit);
 	pstmt.setString(5, LName);
-	pstmt.setDate(6,Birth_Date);
-	pstmt.setString(7, City_Curr);
+	pstmt.setInt(13,Age);
+	pstmt.setString(6, City_Curr);
+	pstmt.setString(7, State_Curr);
 	pstmt.setString(8, Zip_Curr);
-	pstmt.setString(9, State_Curr);
-	pstmt.setString(10, Phone_Curr);
-	pstmt.setString(11, Office_Number);
-	pstmt.setString(12, Dep_Code);
+	pstmt.setString(9, Phone_Curr);
+	pstmt.setString(10, Office_Number);
+	pstmt.setString(11, Dep_Code);
+	pstmt.setString(12, Street_Curr);
 	
 	
 	try {
@@ -316,8 +318,8 @@ private static void InsertDepartment(Connection conn) throws SQLException {
 
 private static void InsertStudent(Connection conn) throws SQLException {
 	PreparedStatement pstmt = conn.prepareStatement(
-			"INSERT INTO STUDENT(Nnumber, Ssn, Fname, Minit, LName, Birth_Date, Sex, Class, City_Curr, State_Curr, Zip_Curr, Phone_Curr, City_Perm, State_Perm, Zip_Perm, Phone_Perm) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			"INSERT INTO STUDENT(Nnumber, Ssn, Fname, Minit, LName, Birth_Date, Sex, Class, City_Curr, State_Curr, Zip_Curr, Phone_Curr, City_Perm, State_Perm, Zip_Perm, Phone_Perm, Street_Curr, Street_Perm) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	PreparedStatement pstmtt = conn.prepareStatement(
 			"INSERT INTO INFORMATION(Nnumber, Ssn)"
 					+ "VALUES (?, ?)");
@@ -326,7 +328,7 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	System.out.print("\nEnter Student Nnumber: ");
 	String Nnumber = GetNnumber();
 	
-	System.out.print("\nEnter SSN: ");
+	System.out.print("\nEnter SSN (No Dashes): ");
 	String Ssn = Main.getString();
 	while(Ssn.compareTo("")==0||Ssn.length()!=9||Ssn.matches("[0-9]+")==false) {
 		System.out.println("Enter a valid Ssn");
@@ -362,6 +364,9 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	System.out.print("\nEnter Class: ");
 	String Class = Main.getString();
 	
+	System.out.print("\nEnter Current Street: ");
+	String Street_Curr = Main.getString();
+	
 	System.out.print("\nEnter Current City: ");
 	String City_Curr = Main.getString();
 	
@@ -373,6 +378,9 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	
 	System.out.print("\nEnter Current Phone Number: ");
 	String Phone_Curr = Main.getString();
+	
+	System.out.print("\nEnter Current Street: ");
+	String Street_Perm = Main.getString();
 	
 	System.out.print("\nEnter Permanent City: ");
 	String City_Perm = Main.getString();
@@ -405,6 +413,8 @@ private static void InsertStudent(Connection conn) throws SQLException {
 	pstmt.setString(14, State_Perm);
 	pstmt.setString(15, Zip_Perm);
 	pstmt.setString(16,Phone_Perm);
+	pstmt.setString(17,Street_Curr);
+	pstmt.setString(18,Street_Perm);
 	try {
 	int NumRows = pstmtt.executeUpdate();
 	NumRows = pstmt.executeUpdate();
@@ -491,7 +501,7 @@ public static void InsertToCourse(Connection conn) throws SQLException{
 	pstmt.setInt(4, Section_Number);
 	pstmt.setInt(5,year);
 	pstmt.setString(6, Semester);
-    pstmt.setString(7, null);
+    pstmt.setInt(7, -1);
 	
 	try {
 	int NumRows = pstmt.executeUpdate();
